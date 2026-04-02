@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookshelf</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Bookshelf</h1>
+
+    <div id="error-message" class="error" hidden></div>
+
+    <form id="add-book-form">
+      <h2>Add a Book</h2>
+
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" required>
+
+      <label for="author">Author</label>
+      <input type="text" id="author" name="author" required>
+
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        <option value="want-to-read">Want to Read</option>
+        <option value="reading">Reading</option>
+        <option value="read">Read</option>
+      </select>
+
+      <label for="genre">Genre</label>
+      <input type="text" id="genre" name="genre">
+
+      <label for="notes">Notes</label>
+      <textarea id="notes" name="notes" rows="3"></textarea>
+
+      <label for="source">Source</label>
+      <input type="text" id="source" name="source">
+
+      <button type="submit">Add Book</button>
+    </form>
+
+    <h2>Your Books</h2>
+    <div id="book-list"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
