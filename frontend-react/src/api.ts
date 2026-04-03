@@ -35,7 +35,12 @@ export async function getBooks(): Promise<Book[]> {
 }
 
 export async function addBook(book: NewBook): Promise<Book> {
-  return apiFetch<Book>('/books', { method: 'POST', body: book })
+  const { id } = await apiFetch<{ id: number }>('/books', { method: 'POST', body: book })
+  return {
+    id,
+    added_at: new Date().toISOString(),
+    ...book,
+  }
 }
 
 export async function deleteBook(id: number): Promise<void> {
