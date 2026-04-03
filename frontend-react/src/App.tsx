@@ -7,11 +7,13 @@ import type { Book, NewBook, BookUpdate } from './types'
 function App() {
   const [books, setBooks] = useState<Book[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     getBooks()
       .then(setBooks)
       .catch((err: Error) => setError(err.message))
+      .finally(() => setIsLoading(false))
   }, [])
 
   async function handleAdd(newBook: NewBook) {
@@ -49,7 +51,10 @@ function App() {
       <h1>Bookshelf</h1>
       {error && <p className="error">{error}</p>}
       <AddBookForm onAdd={handleAdd} />
-      <BookList books={books} onDelete={handleDelete} onUpdate={handleUpdate} />
+      {isLoading
+        ? <p className="loading">Loading your books...</p>
+        : <BookList books={books} onDelete={handleDelete} onUpdate={handleUpdate} />
+      }
     </div>
   )
 }

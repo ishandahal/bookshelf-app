@@ -18,6 +18,13 @@ describe('App', () => {
     vi.mocked(api.getBooks).mockResolvedValue([mockBook])
   })
 
+  it('shows a loading indicator while books are being fetched', () => {
+    vi.mocked(api.getBooks).mockReturnValue(new Promise(() => {}))
+    render(<App />)
+
+    expect(screen.getByText(/loading/i)).toBeInTheDocument()
+  })
+
   it('loads and displays books on mount', async () => {
     render(<App />)
 

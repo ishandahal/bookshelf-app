@@ -239,6 +239,13 @@ button[type="submit"]:hover {
   color: #fff;
 }
 
+/* ─── Loading state ──────────────────────────────────────────────────────── */
+.loading {
+  color: var(--color-muted);
+  text-align: center;
+  padding: 2rem 0;
+}
+
 /* ─── Empty state ─────────────────────────────────────────────────────────── */
 .empty-state {
   color: var(--color-muted);
