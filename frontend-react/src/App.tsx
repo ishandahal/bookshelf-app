@@ -1,5 +1,6 @@
 import BookList from './components/BookList'
-import type { Book } from './types'
+import AddBookForm from './components/AddBookForm'
+import type { Book, NewBook } from './types'
 
 const testBooks: Book[] = [
   {
@@ -24,9 +25,14 @@ function App() {
     console.log('Delete clicked for book id:', id)
   }
 
+  function handleAdd(book: NewBook) {
+    console.log('Add book:', book)
+  }
+
   return (
     <div>
       <h1>Bookshelf</h1>
+      <AddBookForm onAdd={handleAdd} />
       <BookList books={testBooks} onDelete={handleDelete} />
     </div>
   )

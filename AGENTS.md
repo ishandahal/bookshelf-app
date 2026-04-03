@@ -9,6 +9,7 @@ Best practices for the coding agent to follow on this project.
 - **Our goal is to learn here so clearly explain implemenation 
 - **Aim to be clear but no overly verbose
 - **Ensure key ideas are emphasized
+- **Stop at appropriate moments to check for understanding and ensure concepts are clearly understood
 
 
 ### 1. Small, Incremental Changes
