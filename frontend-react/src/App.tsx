@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import AddBookForm from './components/AddBookForm'
 import BookList from './components/BookList'
 import { getBooks, addBook, updateBook, deleteBook } from './api'
+import ErrorMessage from './components/ErrorMessage'
 import type { Book, NewBook, BookUpdate } from './types'
 
 function App() {
@@ -49,7 +50,7 @@ function App() {
   return (
     <div className="app">
       <h1>Bookshelf</h1>
-      {error && <p className="error">{error}</p>}
+      <ErrorMessage message={error} />
       <AddBookForm onAdd={handleAdd} />
       {isLoading
         ? <p className="loading">Loading your books...</p>
