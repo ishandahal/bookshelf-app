@@ -1,39 +1,45 @@
-import BookList from './components/BookList'
+import { useState, useEffect } from 'react'
 import AddBookForm from './components/AddBookForm'
+import BookList from './components/BookList'
+import { getBooks, addBook, deleteBook } from './api'
 import type { Book, NewBook } from './types'
 
-const testBooks: Book[] = [
-  {
-    id: 1,
-    title: 'Dune',
-    author: 'Frank Herbert',
-    status: 'reading',
-    genre: 'sci-fi',
-    added_at: '2024-01-15T10:00:00',
-  },
-  {
-    id: 2,
-    title: '1984',
-    author: 'George Orwell',
-    status: 'want-to-read',
-    added_at: '2024-01-16T10:00:00',
-  },
-]
-
 function App() {
-  function handleDelete(id: number) {
-    console.log('Delete clicked for book id:', id)
+  const [books, setBooks] = useState<Book[]>([])
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    getBooks()
+      .then(setBooks)
+      .catch((err: Error) => setError(err.message))
+  }, [])
+
+  async function handleAdd(newBook: NewBook) {
+    try {
+      const created = await addBook(newBook)
+      setBooks([...books, created])
+      setError(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add book')
+    }
   }
 
-  function handleAdd(book: NewBook) {
-    console.log('Add book:', book)
+  async function handleDelete(id: number) {
+    try {
+      await deleteBook(id)
+      setBooks(books.filter(b => b.id !== id))
+      setError(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete book')
+    }
   }
 
   return (
     <div>
       <h1>Bookshelf</h1>
+      {error && <p className="error">{error}</p>}
       <AddBookForm onAdd={handleAdd} />
-      <BookList books={testBooks} onDelete={handleDelete} />
+      <BookList books={books} onDelete={handleDelete} />
     </div>
   )
 }
