@@ -22,7 +22,7 @@ function BookCard({ book, onDelete }: BookCardProps) {
 
       <p><strong>Added:</strong> {addedDate}</p>
 
-      <button onClick={() => onDelete(book.id)}>Delete</button>
+      <button className="delete-btn" onClick={() => onDelete(book.id)}>Delete</button>
     </div>
   )
 }

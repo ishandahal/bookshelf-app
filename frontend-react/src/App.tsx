@@ -35,7 +35,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="app">
       <h1>Bookshelf</h1>
       {error && <p className="error">{error}</p>}
       <AddBookForm onAdd={handleAdd} />

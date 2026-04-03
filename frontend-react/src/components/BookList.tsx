@@ -8,7 +8,7 @@ interface BookListProps {
 
 function BookList({ books, onDelete }: BookListProps) {
   if (books.length === 0) {
-    return <p>No books yet. Add one above!</p>
+    return <p className="empty-state">No books yet. Add one above!</p>
   }
 
   return (
