@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import AddBookForm from './components/AddBookForm'
 import BookList from './components/BookList'
-import { getBooks, addBook, deleteBook } from './api'
-import type { Book, NewBook } from './types'
+import { getBooks, addBook, updateBook, deleteBook } from './api'
+import type { Book, NewBook, BookUpdate } from './types'
 
 function App() {
   const [books, setBooks] = useState<Book[]>([])
@@ -24,6 +24,16 @@ function App() {
     }
   }
 
+  async function handleUpdate(id: number, changes: BookUpdate) {
+    try {
+      await updateBook(id, changes)
+      setBooks(books.map(b => b.id === id ? { ...b, ...changes } : b))
+      setError(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update book')
+    }
+  }
+
   async function handleDelete(id: number) {
     try {
       await deleteBook(id)
@@ -39,7 +49,7 @@ function App() {
       <h1>Bookshelf</h1>
       {error && <p className="error">{error}</p>}
       <AddBookForm onAdd={handleAdd} />
-      <BookList books={books} onDelete={handleDelete} />
+      <BookList books={books} onDelete={handleDelete} onUpdate={handleUpdate} />
     </div>
   )
 }

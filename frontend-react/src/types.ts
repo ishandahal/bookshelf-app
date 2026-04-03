@@ -1,5 +1,14 @@
 export type Status = 'want-to-read' | 'reading' | 'read'
 
+export interface BookUpdate {
+  title?: string
+  author?: string
+  status?: Status
+  genre?: string
+  notes?: string
+  source?: string
+}
+
 export interface NewBook {
   title: string
   author: string

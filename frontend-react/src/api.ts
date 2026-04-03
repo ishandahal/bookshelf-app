@@ -1,4 +1,4 @@
-import type { Book, NewBook } from './types'
+import type { Book, NewBook, BookUpdate } from './types'
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
@@ -41,6 +41,10 @@ export async function addBook(book: NewBook): Promise<Book> {
     added_at: new Date().toISOString(),
     ...book,
   }
+}
+
+export async function updateBook(id: number, changes: BookUpdate): Promise<void> {
+  return apiFetch<void>(`/books/${id}`, { method: 'PATCH', body: changes })
 }
 
 export async function deleteBook(id: number): Promise<void> {

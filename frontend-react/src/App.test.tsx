@@ -57,6 +57,24 @@ describe('App', () => {
     })
   })
 
+  it('updates a book in the list when edited', async () => {
+    vi.mocked(api.updateBook).mockResolvedValue()
+    render(<App />)
+
+    await waitFor(() => screen.getByRole('heading', { name: /Dune/ }))
+
+    await userEvent.click(screen.getByRole('button', { name: /edit/i }))
+
+    const titleInput = screen.getByDisplayValue('Dune')
+    await userEvent.clear(titleInput)
+    await userEvent.type(titleInput, 'Dune Messiah')
+    await userEvent.click(screen.getByRole('button', { name: /save/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /Dune Messiah/ })).toBeInTheDocument()
+    })
+  })
+
   it('removes a book from the list when deleted', async () => {
     vi.mocked(api.deleteBook).mockResolvedValue()
     render(<App />)
