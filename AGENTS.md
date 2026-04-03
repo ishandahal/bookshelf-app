@@ -16,6 +16,7 @@ Best practices for the coding agent to follow on this project.
 - **Avoid large rewrites**: Prefer editing existing code over replacing entire files
 - **Commit-sized chunks**: Each change should be logical and self-contained
 - **Verify after each step**: Run/test before moving to the next change
+- **Pair incremental changes with frequent commits 
 
 ### 2. Red/Green TDD (Test-Driven Development)
 Follow the TDD cycle strictly:
