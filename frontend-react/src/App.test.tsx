@@ -1,9 +1,18 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
+import { AuthProvider } from './context/AuthContext'
 import * as api from './api'
 
 vi.mock('./api')
+
+function renderApp() {
+  return render(
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  )
+}
 
 const mockBook = {
   id: 1,
@@ -15,18 +24,28 @@ const mockBook = {
 
 describe('App', () => {
   beforeEach(() => {
+    localStorage.setItem('bookshelf_token', 'test-token')
     vi.mocked(api.getBooks).mockResolvedValue([mockBook])
+  })
+
+  afterEach(() => localStorage.clear())
+
+  it('shows the login form when not authenticated', () => {
+    localStorage.clear()
+    renderApp()
+
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument()
   })
 
   it('shows a loading indicator while books are being fetched', () => {
     vi.mocked(api.getBooks).mockReturnValue(new Promise(() => {}))
-    render(<App />)
+    renderApp()
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument()
   })
 
   it('loads and displays books on mount', async () => {
-    render(<App />)
+    renderApp()
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: /Dune/ })).toBeInTheDocument()
@@ -35,7 +54,7 @@ describe('App', () => {
 
   it('shows an error message when loading fails', async () => {
     vi.mocked(api.getBooks).mockRejectedValue(new Error('Network error'))
-    render(<App />)
+    renderApp()
 
     await waitFor(() => {
       expect(screen.getByText(/Network error/)).toBeInTheDocument()
@@ -51,7 +70,7 @@ describe('App', () => {
       added_at: '2024-01-16T10:00:00',
     }
     vi.mocked(api.addBook).mockResolvedValue(newBook)
-    render(<App />)
+    renderApp()
 
     await waitFor(() => screen.getByRole('heading', { name: /Dune/ }))
 
@@ -66,7 +85,7 @@ describe('App', () => {
 
   it('updates a book in the list when edited', async () => {
     vi.mocked(api.updateBook).mockResolvedValue()
-    render(<App />)
+    renderApp()
 
     await waitFor(() => screen.getByRole('heading', { name: /Dune/ }))
 
@@ -84,7 +103,7 @@ describe('App', () => {
 
   it('removes a book from the list when deleted', async () => {
     vi.mocked(api.deleteBook).mockResolvedValue()
-    render(<App />)
+    renderApp()
 
     await waitFor(() => screen.getByRole('heading', { name: /Dune/ }))
 

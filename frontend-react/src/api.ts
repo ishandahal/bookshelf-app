@@ -1,4 +1,5 @@
-import type { Book, NewBook, BookUpdate } from './types'
+import { getToken, removeToken } from './auth'
+import type { Book, BookUpdate, NewBook } from './types'
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
 
@@ -7,6 +8,12 @@ async function apiFetch<T>(
   options: { method?: string; body?: unknown } = {}
 ): Promise<T> {
   const headers: Record<string, string> = {}
+
+  const token = getToken()
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
+
   if (options.body) {
     headers['Content-Type'] = 'application/json'
   }
@@ -16,6 +23,11 @@ async function apiFetch<T>(
     headers,
     body: options.body ? JSON.stringify(options.body) : undefined,
   })
+
+  if (response.status === 401) {
+    removeToken()
+    throw new Error('Unauthorized')
+  }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null)
@@ -28,6 +40,23 @@ async function apiFetch<T>(
   }
 
   return response.json() as Promise<T>
+}
+
+export async function login(username: string, password: string): Promise<string> {
+  const response = await fetch(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ username, password }),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null)
+    const message = (errorData?.detail as string) ?? 'Login failed'
+    throw new Error(message)
+  }
+
+  const data = await response.json() as { access_token: string }
+  return data.access_token
 }
 
 export async function getBooks(): Promise<Book[]> {

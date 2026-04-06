@@ -1,21 +1,26 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from './context/AuthContext'
 import AddBookForm from './components/AddBookForm'
 import BookList from './components/BookList'
-import { getBooks, addBook, updateBook, deleteBook } from './api'
 import ErrorMessage from './components/ErrorMessage'
+import LoginForm from './components/LoginForm'
+import { getBooks, addBook, updateBook, deleteBook } from './api'
 import type { Book, NewBook, BookUpdate } from './types'
 
 function App() {
+  const { isLoggedIn, logout } = useAuth()
+
   const [books, setBooks] = useState<Book[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    if (!isLoggedIn) return
     getBooks()
       .then(setBooks)
       .catch((err: Error) => setError(err.message))
       .finally(() => setIsLoading(false))
-  }, [])
+  }, [isLoggedIn])
 
   async function handleAdd(newBook: NewBook) {
     try {
@@ -47,9 +52,16 @@ function App() {
     }
   }
 
+  if (!isLoggedIn) {
+    return <LoginForm />
+  }
+
   return (
     <div className="app">
-      <h1>Bookshelf</h1>
+      <div className="app-header">
+        <h1>Bookshelf</h1>
+        <button className="logout-btn" onClick={logout}>Logout</button>
+      </div>
       <ErrorMessage message={error} />
       <AddBookForm onAdd={handleAdd} />
       {isLoading
