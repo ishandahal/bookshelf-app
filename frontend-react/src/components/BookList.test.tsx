@@ -21,14 +21,14 @@ const testBooks: Book[] = [
 
 describe('BookList', () => {
   it('renders a card for each book', () => {
-    render(<BookList books={testBooks} onDelete={() => {}} />)
+    render(<BookList books={testBooks} onDelete={() => {}} onUpdate={() => {}} />)
 
     expect(screen.getByRole('heading', { name: /Dune/ })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /1984/ })).toBeInTheDocument()
   })
 
   it('shows empty state when there are no books', () => {
-    render(<BookList books={[]} onDelete={() => {}} />)
+    render(<BookList books={[]} onDelete={() => {}} onUpdate={() => {}} />)
 
     expect(screen.getByText(/no books yet/i)).toBeInTheDocument()
   })

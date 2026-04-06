@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { NewBook, Status } from '../types'
+import type { NewBook } from '../types'
 
 interface AddBookFormProps {
   onAdd: (book: NewBook) => void
