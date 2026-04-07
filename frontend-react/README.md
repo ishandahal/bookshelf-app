@@ -1,73 +1,71 @@
-# React + TypeScript + Vite
+# Bookshelf — React Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript frontend for tracking your reading list. Connects to the [Bookshelf API](https://github.com/ishandahal/bookshelf-api).
 
-Currently, two official plugins are available:
+## Tech stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [React 19](https://react.dev/) — UI components
+- [TypeScript](https://www.typescriptlang.org/) — type safety
+- [Vite](https://vite.dev/) — dev server and build tool
+- [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/) — unit tests
 
-## React Compiler
+## Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Copy the example env file and set your API URL:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cp .env.example .env
 ```
+
+`.env`:
+```
+VITE_API_URL=http://localhost:8000
+```
+
+## Commands
+
+```bash
+npm run dev      # start dev server at http://localhost:5173
+npm test         # run tests in watch mode
+npm run build    # type-check and build for production
+npm run lint     # run ESLint
+```
+
+## Project structure
+
+```
+src/
+├── api.ts                  # HTTP layer — all fetch calls live here
+├── auth.ts                 # localStorage token helpers
+├── types.ts                # shared TypeScript interfaces
+├── App.tsx                 # root component — state and handlers
+├── main.tsx                # app entry point, mounts AuthProvider
+├── context/
+│   └── AuthContext.tsx     # global auth state (isLoggedIn, login, logout)
+└── components/
+    ├── AddBookForm.tsx      # controlled form for adding a book
+    ├── BookCard.tsx         # single book — view and inline edit modes
+    ├── BookList.tsx         # renders list of BookCards, empty state
+    ├── ErrorMessage.tsx     # displays API errors
+    └── LoginForm.tsx        # username/password login form
+```
+
+## Auth flow
+
+1. User submits `<LoginForm>` with username and password
+2. `POST /auth/login` returns a JWT token
+3. Token is stored in `localStorage`
+4. Every subsequent API request includes `Authorization: Bearer <token>`
+5. On logout (or 401 response), token is removed and the login form is shown
+
+## Deployment
+
+Deployed to [Vercel](https://vercel.com). Set the following environment variable in the Vercel dashboard:
+
+| Variable | Description |
+|---|---|
+| `VITE_API_URL` | Full URL of the deployed API, e.g. `https://your-api.onrender.com` |
